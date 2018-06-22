@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 from __future__ import absolute_import, division, print_function, unicode_literals
 import app
-import json
 
 from splunklib.searchcommands import dispatch, ReportingCommand, Configuration, Option, validators
 import sys
@@ -34,14 +33,19 @@ class Bfs2Command(ReportingCommand):
       yield { 'children': children, 'parents': parents }
 
     def reduce(self, records):
-      graph = { 'children': [], 'parents': [] }
+      graph_temp = { 'children': [], 'parents': [] }
+      graph = []
 
       for record in records:
        for item in record['children']:
-        graph['children'].append(item)
+        graph_temp['children'].append(item)
        for item in record['parents']:
-        graph['parents'].append(item)
+        graph_temp['parents'].append(item)
+  
+      for num in range(len(graph_temp['children'])):
+       graph.append([ graph_temp['children'][num], graph_temp['parents'][num] ])
 
-      yield graph
+      
+      yield { 'array': graph }
 
 dispatch(Bfs2Command, sys.argv, sys.stdin, sys.stdout, __name__)
