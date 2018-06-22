@@ -31,14 +31,17 @@ class Bfs2Command(ReportingCommand):
       for record in records:
         children.append(record[child_field])
         parents.append(record[parent_field])
-
-      yield { 'child': children, 'parent': parents }
+      yield { 'children': children, 'parents': parents }
 
     def reduce(self, records):
-      graph = []
-      for record in records:
-        graph.append({ 'child': record['child'], 'parent': record['parent'] })
+      graph = { 'children': [], 'parents': [] }
 
-      yield { 'foo': graph }
+      for record in records:
+       for item in record['children']:
+        graph['children'].append(item)
+       for item in record['parents']:
+        graph['parents'].append(item)
+
+      yield graph
 
 dispatch(Bfs2Command, sys.argv, sys.stdin, sys.stdout, __name__)
