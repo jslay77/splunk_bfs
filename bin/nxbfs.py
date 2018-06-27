@@ -37,12 +37,16 @@ class nxBfsCommand(ReportingCommand):
     def reduce(self, records):
       G = nx.Graph()
       res = []
+      seen = []
       for r in records:
         for num in range(len(r['children'])):
           G.add_edge(r['children'][num], r['parents'][num])
         
         for num in range(len(r['parents'])):
-          bfs=list(set(sum(list(nx.algorithms.bfs_tree(G, r['parents'][num]).edges()), ())))
+          if (r['parents'][num] in seen):
+            break
+          seen.append(r['parents'][num])
+          bfs=list(nx.bfs_edges(G, r['parents'][num]))
           res.append({r['parents'][num]: bfs})
       yield { 'result': res }
 
