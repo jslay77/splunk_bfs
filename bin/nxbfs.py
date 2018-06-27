@@ -40,11 +40,10 @@ class nxBfsCommand(ReportingCommand):
       for r in records:
         for num in range(len(r['children'])):
           G.add_edge(r['children'][num], r['parents'][num])
-      
-      res.append([G.edges()])
-      #res.append(["foo", "bar"])
-
-     
-      yield { 'array': res }
+        
+        for num in range(len(r['parents'])):
+          bfs=list(set(sum(list(nx.algorithms.bfs_tree(G, r['parents'][num]).edges()), ())))
+          res.append({r['parents'][num]: bfs})
+      yield { 'result': res }
 
 dispatch(nxBfsCommand, sys.argv, sys.stdin, sys.stdout, __name__)
