@@ -46,7 +46,7 @@ class nxBfsCommand(ReportingCommand):
           if (r['parents'][num] in seen):
             break
           seen.append(r['parents'][num])
-          bfs=list(nx.bfs_edges(G, r['parents'][num]))
+          bfs=list(nx.bfs_tree(G, r['parents'][num]))
           res.append({r['parents'][num]: bfs})
       yield { 'result': res }
 
