@@ -43,8 +43,7 @@ class nxBfsCommand(StreamingCommand):
       for item in records:
         graph.add_edge(item[child], item[parent])
         bfs_path = list(nx.bfs_tree(graph, item[parent])) 
-        bfs_path_str = ' '.join(str(i) for i in bfs_path)
-        item[self.bfs_path] = bfs_path_str
+        item[self.bfs_path] = bfs_path
         item[self.bfs_count]=len(bfs_path)
         yield item
         
