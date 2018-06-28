@@ -23,31 +23,22 @@ class nxBfsCommand(ReportingCommand):
 
     @Configuration()
     def map(self, records):
-      child_field = self.child
-      parent_field = self.parent
-
-      children = []
-      parents = []
-
-      for record in records:
-        children.append(record[child_field])
-        parents.append(record[parent_field])
-      yield { 'children': children, 'parents': parents }
-
-    def reduce(self, records):
+      c = self.child
+      p = self.parent
       G = nx.Graph()
       res = []
-      seen = []
+
       for r in records:
-        for num in range(len(r['children'])):
-          G.add_edge(r['children'][num], r['parents'][num])
-        
-        for num in range(len(r['parents'])):
-          if (r['parents'][num] in seen):
-            break
-          seen.append(r['parents'][num])
-          bfs=list(nx.bfs_tree(G, r['parents'][num]))
-          res.append({r['parents'][num]: bfs})
+        G.add_edge(r[c], r[p])
+        bfs=list(nx.bfs_tree(G, r[p])) 
+        res.append({r[p]: bfs})
+      yield { 'result': res }
+
+    def reduce(self, records):
+      res = []
+      for r in records:
+        for num in range(len(r['result'])):
+          res.append(r['result'][num])
       yield { 'result': res }
 
 dispatch(nxBfsCommand, sys.argv, sys.stdin, sys.stdout, __name__)
