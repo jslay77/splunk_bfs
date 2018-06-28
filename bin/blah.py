@@ -48,7 +48,7 @@ class blahCommand(ReportingCommand):
       blah = []
       for item in records:
         graph_j = json.loads(item['json_data'])
-        blah.append(graph_j)
-      yield { 'foo': blah }
+        for tup in graph_j['links']:
+          yield { 'target': tup['target'], 'source': tup['source'] }
       
 dispatch(blahCommand, sys.argv, sys.stdin, sys.stdout, __name__)
