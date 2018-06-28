@@ -36,17 +36,19 @@ class nxBfsCommand(StreamingCommand):
     @Configuration()
     def stream(self, records):
       self.logger.debug('nxbfs: %s', self)
-      c = self.child
-      p = self.parent
-      G = nx.Graph()
-      res = []
+      child = self.child
+      parent = self.parent
+      graph = nx.Graph()
 
-      for r in records:
-        G.add_edge(r[c], r[p])
-        bfs=list(nx.bfs_tree(G, r[p])) 
-        r[self.bfs_path] = {r[p]: bfs}
-        r[self.bfs_count] = len(bfs)
-        yield r
+      for item in records:
+        graph.add_edge(item[child], item[parent])
+        bfs_path = list(nx.bfs_tree(graph, item[parent])) 
+        yield {
+          self.bfs_path: bfs_path, 
+          self.bfs_count: len(bfs_path),
+          parent: item[parent],
+          child: item[child]
+        }
         
 
 dispatch(nxBfsCommand, sys.argv, sys.stdin, sys.stdout, __name__)
