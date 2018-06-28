@@ -38,7 +38,6 @@ class blahCommand(ReportingCommand):
 
     @Configuration()
     def map(self, records):
-      self.logger.debug('blah[map]: %s', self)
       child = self.child
       parent = self.parent
       graph = nx.Graph()
