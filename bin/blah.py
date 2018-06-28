@@ -9,7 +9,6 @@ from splunklib.searchcommands import dispatch, ReportingCommand, Configuration, 
 import sys
 import networkx as nx
 
-
 @Configuration()
 class blahCommand(ReportingCommand):
     child = Option(
@@ -17,19 +16,16 @@ class blahCommand(ReportingCommand):
         **Syntax:** **child=***<fieldname>*
         **Description:** Name of the field that holds the child''',
         require=True, validate=validators.Fieldname())
-
     parent = Option(
         doc='''
         **Syntax:** **parent=***<fieldname>*
         **Description:** Name of the field that holds the parent''',
         require=True, validate=validators.Fieldname())
-
     bfs_path = Option(
         doc='''
         **Syntax:** **parent=***<fieldname>*
         **Description:** Name of the field that will hold the computed bfs_path''',
         require=False, default="bfs_path", validate=validators.Fieldname())
-
     bfs_count = Option(
         doc='''
         **Syntax:** **parent=***<fieldname>*
@@ -53,7 +49,8 @@ class blahCommand(ReportingCommand):
         graph = nx.Graph()
         for tup in graph_j['links']:
            graph.add_edge(tup['source'], tup['target'])
-           bfs = list(nx.bfs_tree(graph, tup['source']))
+        for node in graph_j['nodes']:
+           bfs = list(nx.bfs_tree(graph, node['id']))
            yield { bfs_path: bfs, bfs_count: len(bfs) }
 
 dispatch(blahCommand, sys.argv, sys.stdin, sys.stdout, __name__)
