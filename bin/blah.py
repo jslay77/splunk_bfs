@@ -1,4 +1,6 @@
 #!/usr/bin/env python
+# vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
+
 from __future__ import absolute_import, division, print_function, unicode_literals
 import app
 import json
@@ -45,10 +47,14 @@ class blahCommand(ReportingCommand):
       yield { 'json_data': nx.node_link_data(graph) }
 
     def reduce(self, records):
-      blah = []
+      bfs_path = self.bfs_path
+      bfs_count = self.bfs_count
       for item in records:
         graph_j = json.loads(item['json_data'])
+        graph = nx.Graph()
         for tup in graph_j['links']:
-          yield { 'target': tup['target'], 'source': tup['source'] }
-      
+           graph.add_edge(tup['source'], tup['target'])
+           bfs = list(nx.bfs_tree(graph, tup['source']))
+           yield { bfs_path: bfs, bfs_count: len(bfs) }
+
 dispatch(blahCommand, sys.argv, sys.stdin, sys.stdout, __name__)
