@@ -8,4 +8,6 @@
  | mvexpand data
  | makemv data delim=","
  | eval Parent=mvindex(data,0),Child=mvindex(data,1)
- | bfs parent=Parent child=Child
+ | nxbfs parent=Parent child=Child
+
+#  Using networkX python libs
