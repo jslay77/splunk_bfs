@@ -37,7 +37,8 @@ import sys
 
 from . import environment
 
-csv.field_size_limit(10485760)  # The default value is 128KB; upping to 10MB. See SPL-12117 for background on this issue
+#csv.field_size_limit(10485760)  # The default value is 128KB; upping to 10MB. See SPL-12117 for background on this issue
+csv.field_size_limit(1073741824)  # The default value is 128KB; upping to 1GB. See jslay@splunk.com :)
 
 if sys.platform == 'win32':
     # Work around the fact that on Windows '\n' is mapped to '\r\n'. The typical solution is to simply open files in
